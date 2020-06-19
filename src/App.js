@@ -6,6 +6,7 @@ import {
   useRouteMatch,
   useHistory,
 } from 'react-router-dom'
+import { useField } from './hooks'
 
 const Menu = () => {
   const padding = {
@@ -90,18 +91,27 @@ const Footer = () => (
 )
 
 const CreateNew = (props) => {
-  const [content, setContent] = useState('')
-  const [author, setAuthor] = useState('')
-  const [info, setInfo] = useState('')
+  const { reset: contentReset, ...content } = useField('content')
+  const { reset: authorReset, ...author } = useField('author')
+  const { reset: infoReset, ...info } = useField('info')
+
+  console.log(author)
+
+  const handleClear = () => {
+    contentReset()
+    authorReset()
+    infoReset()
+  }
 
   const history = useHistory()
 
   const handleSubmit = (e) => {
     e.preventDefault()
+
     props.addNew({
-      content,
-      author,
-      info,
+      content: content.value,
+      author: author.value,
+      info: info.value,
       votes: 0,
     })
     history.push('/')
@@ -112,46 +122,41 @@ const CreateNew = (props) => {
       <h2>create a new anecdote</h2>
       <form onSubmit={handleSubmit}>
         <div>
-          content
-          <input
-            name="content"
-            value={content}
-            onChange={(e) => setContent(e.target.value)}
-          />
+          content:
+          <input {...content} />
         </div>
         <div>
-          author
-          <input
-            name="author"
-            value={author}
-            onChange={(e) => setAuthor(e.target.value)}
-          />
+          author:
+          <input {...author} />
         </div>
         <div>
-          url for more info
-          <input
-            name="info"
-            value={info}
-            onChange={(e) => setInfo(e.target.value)}
-          />
+          url for more info:
+          <input {...info} />
         </div>
         <button>create</button>
+        <button
+          onClick={(e) => {
+            e.preventDefault()
+            handleClear()
+          }}
+        >
+          reset
+        </button>
       </form>
     </div>
   )
 }
 
 const Notification = ({ message }) => {
-  const notificationStyle = {
-    borderStyle: 'solid',
-    borderRadius: 5,
-    padding: 10,
-  }
   if (!message) {
     return null
   }
 
-  return <div style={notificationStyle}>{message}</div>
+  return (
+    <div style={{ borderStyle: 'solid', borderRadius: 5, padding: 10 }}>
+      {message}
+    </div>
+  )
 }
 
 const App = () => {
