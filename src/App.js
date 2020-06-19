@@ -40,7 +40,7 @@ const Anecdote = ({ anecdote }) => {
   )
 }
 
-const AnecdoteList = ({ anecdotes }) => (
+const AnecdoteList = ({ anecdotes, vote }) => (
   <div>
     <h2>Anecdotes</h2>
 
@@ -48,6 +48,7 @@ const AnecdoteList = ({ anecdotes }) => (
       {anecdotes.map((anecdote) => (
         <li key={anecdote.id}>
           <Link to={`/anecdotes/${anecdote.id}`}>{anecdote.content}</Link>
+          <button onClick={() => vote(anecdote.id)}>vote</button>
         </li>
       ))}
     </ul>
@@ -225,7 +226,7 @@ const App = () => {
           <CreateNew addNew={addNew} />
         </Route>
         <Route path="/">
-          <AnecdoteList anecdotes={anecdotes} />
+          <AnecdoteList anecdotes={anecdotes} vote={vote} />
         </Route>
       </Switch>
 
